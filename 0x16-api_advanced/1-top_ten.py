@@ -1,27 +1,31 @@
 #!/usr/bin/python3
+"""This script will return the number of subscribers associated with
+a subreddit
 """
-Function that queries the Reddit API and prints the titles
-of the first 10 hot posts listed for a given subreddit.
-"""
-
+import json
 import requests
+from sys import argv
 
 
 def top_ten(subreddit):
-    """
-    Function that queries the Reddit API
-    - If not a valid subreddit, print None.
-    """
-    req = requests.get(
-        "https://www.reddit.com/r/{}/hot.json".format(subreddit),
-        headers={"User-Agent": "Custom"},
-        params={"limit": 10},
-    )
+    """Method get the number of users subscribed to a subreddit
 
-    if req.status_code == 200:
-        for get_data in req.json().get("data").get("children"):
-            dat = get_data.get("data")
-            title = dat.get("title")
-            print(title)
-    else:
+    subreddit (Str)- subreddit to check
+
+    Returns - number of users (INT) else 0 (INT) if not subreddit is found
+    """
+    try:
+        h = {'user-agent': 'Mozilla/5.0', 'allow_redirects': 'false'}
+        p = {'limit': 10}
+        url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+        req = requests.get(url, headers=h, params=p).json().get('data')
+
+        for post in req.get('children'):
+            print(post.get('data', None).get('title', None))
+
+    except Exception as e:
         print(None)
+
+
+if __name__ == "__main__":
+    pass
